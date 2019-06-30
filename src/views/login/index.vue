@@ -42,7 +42,8 @@ export default {
       form: {
         mobile: '18401683724',
         code: ''
-      }
+      },
+      captchaObj: null  //极验 验证码对象
     }
   },
 
@@ -50,6 +51,14 @@ export default {
   methods: {
     handleSendCode () {
       const { mobile } = this.form
+
+      //如果已经初始化没验证，就直接弹出验证码框，不要重新初始化
+      if (this.captchaObj) {
+        return this.captchaObj.verify()
+      }
+
+
+
       // 1, 点击获取验证码按钮，发送请求，获取用来初始化验证码的参数
       axios({
         method: 'GET',
@@ -65,12 +74,13 @@ export default {
           offline: !data.success,
           new_captcha: data.new_captcha,
           product: 'bind'  //隐藏按钮式，点了发送验证码立即弹出人机交互图，
-        }, function (captchaObj) {
+        }, (captchaObj) => {
+          this.captchaObj = captchaObj
           // captchaObj 极验 验证码对象
           // 这里可以调用验证实例 captchaObj 的实例方法
           captchaObj.onReady(function () {
             //只有 ready 了才能显示验证码
-            captchaObj.verify(); //显示验证码
+            captchaObj.verify() //显示验证码
           }).onSuccess(function () {
             //极验 验证成功
           })
