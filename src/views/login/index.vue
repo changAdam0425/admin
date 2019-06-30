@@ -75,8 +75,8 @@ export default {
 
   methods: {
 
-    //获取验证码
-    handleSendCode () {
+    //点击获取验证码
+    showGeetest () {
       const { mobile } = this.form
 
       //如果已经初始化没验证，就直接弹出验证码框，不要重新初始化
@@ -127,6 +127,18 @@ export default {
             })
           })
         })
+      })
+    },
+
+
+
+    //验证手机号，通过获取验证码
+    handleSendCode () {
+      this.$refs['ruleForm'].validateField('mobile', errorMessage => {
+        if (errorMessage.trim().length > 0) {  //说明手机号有误
+          return
+        }
+        this.showGeetest()
       })
     },
 
