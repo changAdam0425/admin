@@ -64,10 +64,10 @@ export default {
         method: 'GET',
         url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${mobile}`
       }).then(res => {
-        console.log(res)
+        // console.log(res)
         const data = res.data.data
         // 2, 调用 极验 提供的 API，通过上一步得到的数据初始化验证码
-        initGeetest({
+        window.initGeetest({  //加上 window 前缀，否则模块化会认为是一个未定义的成员
           // 以下配置参数来自服务端 SDK
           gt: data.gt,
           challenge: data.challenge,
@@ -83,6 +83,21 @@ export default {
             captchaObj.verify() //显示验证码
           }).onSuccess(function () {
             //极验 验证成功
+            // console.log(captchaObj.getValidate())
+            // 在极验的 onSuccess 回调函数中，将调用 captchaObj.getValidate() 获取到的结果参数作为发送短信验证码接口的请求参数发出获取短信验证码请求
+            const { geetest_challenge: challenge, geetest_seccode: seccode, geetest_validate: validate } = captchaObj.getValidate()
+            axios({
+              method: 'GET',
+              url: `http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/${mobile}`,
+              params: { //用来传递query查询字符串参数
+                challenge,
+                seccode,
+                validate
+              }
+            }).then(res => {
+              //发送短信验证码成功
+              // console.log(res)
+            })
           })
         })
       })
