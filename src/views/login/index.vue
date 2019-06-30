@@ -189,6 +189,10 @@ export default {
         data: this.form
       }).then(res => {  //>=200 && <400 的状态码会进入这里
         // console.log(res)
+
+        //登陆成功，将接口返回的用户数据放到本地存储
+        window.localStorage.setItem('user_info', JSON.stringify(res.data.data))
+
         //登录成功提示消息
         this.$message({
           message: '登录成功',

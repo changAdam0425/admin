@@ -6,8 +6,8 @@
       <el-dropdown trigger="click">
         <span class="el-dropdown-link">
           <img width="30"
-               src="">
-          18401683724<i class="el-icon-arrow-down el-icon--right"></i>
+               :src="userInfo.photo">
+          {{userInfo.name}}<i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item>账户设置</el-dropdown-item>
@@ -21,7 +21,15 @@
 
 <script>
 export default {
+  data () {
+    return {
+      userInfo: ''
+    }
+  },
 
+  created () {
+    this.userInfo = JSON.parse(window.localStorage.getItem('user_info'))
+  }
 }
 </script>
 
