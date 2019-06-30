@@ -2,16 +2,18 @@
   <div>
     <el-form :model="form">
       <el-form-item>
-        <el-input placeholder="手机号"></el-input>
+        <el-input placeholder="手机号"
+                  v-model="form.mobile"></el-input>
       </el-form-item>
       <el-form-item>
         <!-- 支持栅格布局，一共是24列 -->
         <el-col :span="10">
-          <el-input placeholder="验证码"></el-input>
+          <el-input placeholder="验证码"
+                    v-model="form.code"></el-input>
         </el-col>
         <el-col :span="10"
                 :offset="2">
-          <el-button>
+          <el-button @click="handleSendCode">
             获取验证码
           </el-button>
         </el-col>
@@ -32,10 +34,28 @@
 
 
 <script>
+import axios from 'axios'
 export default {
   data () {
     return {
-      form: {}
+      form: {
+        mobile: '18401683724',
+        code: ''
+      }
+    }
+  },
+
+
+  methods: {
+    handleSendCode () {
+      const { mobile } = this.form
+      // 1, 点击获取验证码按钮，发送请求，获取用来初始化验证码的参数
+      axios({
+        method: 'GET',
+        url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${mobile}`
+      }).then(res => {
+        console.log(res)
+      })
     }
   }
 }
