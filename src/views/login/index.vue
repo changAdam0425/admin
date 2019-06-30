@@ -25,6 +25,7 @@
       <el-form-item>
         <!-- 给组件加 class，会作用到它的根元素 -->
         <el-button class="btn-login"
+                   @click="handlelogin"
                    type="primary">登录</el-button>
       </el-form-item>
     </el-form>
@@ -37,6 +38,7 @@
 import axios from 'axios'
 import '@/vendor/gt'  //gt会向全局暴露一个 window 函数 initGeetest 用来初始化极验的验证码
 export default {
+  name: 'AppLogin',
   data () {
     return {
       form: {
@@ -49,6 +51,8 @@ export default {
 
 
   methods: {
+
+    //获取验证码
     handleSendCode () {
       const { mobile } = this.form
 
@@ -100,6 +104,28 @@ export default {
             })
           })
         })
+      })
+    },
+
+
+    //登录
+    handlelogin () {
+      axios({
+        method: 'POST',
+        url: 'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
+        data: this.form
+      }).then(res => {  //>=200 && <400 的状态码会进入这里
+        // console.log(res)
+        //登录成功提示消息
+        this.$message({
+          message: '登录成功',
+          type: 'success'
+        })
+        this.$router.push({
+          name: 'Home'
+        })
+      }).catch(err => {   // >=400 的状态码会进入这里
+        this.$message.error('登录失败,手机号或验证码错误')
       })
     }
   }
