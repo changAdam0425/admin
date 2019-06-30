@@ -20,8 +20,8 @@
           </el-button>
         </el-col>
       </el-form-item>
-      <el-form-item>
-        <el-checkbox></el-checkbox>
+      <el-form-item prop="agree">
+        <el-checkbox v-model="form.agree"></el-checkbox>
         <span>我已阅读并同意<a href="#">用户协议</a>和<a href="#">隐私条款</a></span>
       </el-form-item>
       <el-form-item>
@@ -46,7 +46,8 @@ export default {
     return {
       form: {
         mobile: '18401683724',
-        code: ''
+        code: '',
+        agree: ''
       },
 
       loginloading: false,  //登录按钮的 loading 状态
@@ -62,6 +63,10 @@ export default {
         code: [
           { required: true, message: '请输入验证码', trigger: 'blur' },
           { len: 6, message: '长度必须6个字符', trigger: 'blur' }
+        ],
+        agree: [
+          { required: true, message: '请同意用户协议', trigger: 'change' },  //改变时触发验证规则
+          { pattern: /true/, message: '请同意用户协议', trigger: 'change' }  //正则表达式，必须为true才能通过
         ]
       }
     }
