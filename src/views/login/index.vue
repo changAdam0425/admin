@@ -15,8 +15,10 @@
         </el-col>
         <el-col :span="10"
                 :offset="2">
-          <el-button @click="handleSendCode">
-            获取验证码
+          <el-button @click="handleSendCode"
+                     :disabled="!!codeTimer">
+            <!-- disabled 表示 倒计时的时候禁用按钮 -->
+            {{codeTimer?`还剩${codeSeconds}秒`:'获取验证码'}}
           </el-button>
         </el-col>
       </el-form-item>
@@ -40,6 +42,10 @@
 <script>
 import axios from 'axios'
 import '@/vendor/gt'  //gt会向全局暴露一个 window 函数 initGeetest 用来初始化极验的验证码
+// import { clearInterval } from 'timers';
+
+const initCodeSeconds = 60   //初始化倒计时开始时间
+
 export default {
   name: 'AppLogin',
   data () {
@@ -68,7 +74,11 @@ export default {
           { required: true, message: '请同意用户协议', trigger: 'change' },  //改变时触发验证规则
           { pattern: /true/, message: '请同意用户协议', trigger: 'change' }  //正则表达式，必须为true才能通过
         ]
-      }
+      },
+
+      //倒计时
+      codeSeconds: initCodeSeconds,   //倒计时时间
+      codeTimer: null   //倒计时定时器
     }
   },
 
@@ -105,10 +115,10 @@ export default {
           this.captchaObj = captchaObj
           // captchaObj 极验 验证码对象
           // 这里可以调用验证实例 captchaObj 的实例方法
-          captchaObj.onReady(function () {
+          captchaObj.onReady(() => {
             //只有 ready 了才能显示验证码
             captchaObj.verify() //显示验证码
-          }).onSuccess(function () {
+          }).onSuccess(() => {
             //极验 验证成功
             // console.log(captchaObj.getValidate())
             // 在极验的 onSuccess 回调函数中，将调用 captchaObj.getValidate() 获取到的结果参数作为发送短信验证码接口的请求参数发出获取短信验证码请求
@@ -124,6 +134,8 @@ export default {
             }).then(res => {
               //发送短信验证码成功
               // console.log(res)
+              //倒计时
+              this.codeCountDown()
             })
           })
         })
@@ -179,6 +191,19 @@ export default {
         }
         this.login()
       })
+    },
+
+
+    // 倒计时
+    codeCountDown () {
+      this.codeTimer = window.setInterval(() => {
+        this.codeSeconds--
+        if (this.codeSeconds <= 0) {
+          this.codeSeconds = initCodeSeconds
+          window.clearInterval(this.codeTimer)
+          this.codeTimer = null    //清除计时器的标志，为了让按钮显示正常的获取验证码，而不是 '还剩...秒'的状态
+        }
+      }, 1000)
     }
 
 
