@@ -16,7 +16,7 @@
         <el-col :span="10"
                 :offset="2">
           <el-button @click="handleSendCode"
-                     :disabled="!!codeTimer">
+                     :disabled="!!codeTimer || codeloading">
             <!-- disabled 表示 倒计时的时候禁用按钮 -->
             {{codeTimer?`还剩${codeSeconds}秒`:'获取验证码'}}
           </el-button>
@@ -57,6 +57,7 @@ export default {
       },
 
       loginloading: false,  //登录按钮的 loading 状态
+      codeloading: false,   //获取验证码按钮的 loading 状态
 
       captchaObj: null,  //极验 验证码对象
 
@@ -94,7 +95,8 @@ export default {
         return this.captchaObj.verify()
       }
 
-
+      //初始化验证码期间禁用按钮
+      this.codeloading = true
 
       // 1, 点击获取验证码按钮，发送请求，获取用来初始化验证码的参数
       axios({
@@ -118,6 +120,10 @@ export default {
           captchaObj.onReady(() => {
             //只有 ready 了才能显示验证码
             captchaObj.verify() //显示验证码
+
+            //初始化完成后，回复按钮的点击
+            this.codeloading = false
+
           }).onSuccess(() => {
             //极验 验证成功
             // console.log(captchaObj.getValidate())
