@@ -15,6 +15,11 @@ const router = new Router({
           name: 'Home',
           path: '',    // layout 的默认子路由
           component: () => import('@/views/Home'),
+        },
+        {
+          name: 'Article',
+          path: '/article',
+          component: () => import('@/views/article'),
         }
       ]
     },
