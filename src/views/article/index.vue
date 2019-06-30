@@ -108,6 +108,7 @@
 
 
 <script>
+const userInfo = JSON.parse(window.localStorage.getItem('user_info'))
 export default {
   name: 'AppArticle',
   data () {
@@ -116,6 +117,19 @@ export default {
       articles: {}
     }
   },
+
+  created () {
+    this.$http({
+      methods: 'GET',
+      url: '/articles',
+      headers: {  //自定义发送请求头
+        Authorization: `Bearer ${userInfo.token}`
+      }
+    }).then(res => {
+      console.log(res)
+    })
+  },
+
 
   methods: {
     onSubmit () { },
