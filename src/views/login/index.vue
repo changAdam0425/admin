@@ -40,7 +40,7 @@
 
 
 <script>
-import axios from 'axios'
+// import axios from 'axios'
 import '@/vendor/gt'  //gt会向全局暴露一个 window 函数 initGeetest 用来初始化极验的验证码
 // import { clearInterval } from 'timers';
 
@@ -98,9 +98,9 @@ export default {
       this.codeloading = true
 
       // 1, 点击获取验证码按钮，发送请求，获取用来初始化验证码的参数
-      axios({
+      this.$http({
         method: 'GET',
-        url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${this.form.mobile}`
+        url: `/captchas/${this.form.mobile}`
       }).then(res => {
         // console.log(res)
         const data = res.data.data
@@ -131,9 +131,9 @@ export default {
             // console.log(captchaObj.getValidate())
             // 在极验的 onSuccess 回调函数中，将调用 captchaObj.getValidate() 获取到的结果参数作为发送短信验证码接口的请求参数发出获取短信验证码请求
             const { geetest_challenge: challenge, geetest_seccode: seccode, geetest_validate: validate } = captchaObj.getValidate()
-            axios({
+            this.$http({
               method: 'GET',
-              url: `http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/${this.form.mobile}`,
+              url: `/sms/codes/${this.form.mobile}`,
               params: { //用来传递query查询字符串参数
                 challenge,
                 seccode,
@@ -183,9 +183,9 @@ export default {
     //点击登录
     login () {
       this.loginloading = true
-      axios({
+      this.$http({
         method: 'POST',
-        url: 'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
+        url: '/authorizations',
         data: this.form
       }).then(res => {  //>=200 && <400 的状态码会进入这里
         // console.log(res)
