@@ -79,7 +79,10 @@ export default {
 
       //倒计时
       codeSeconds: initCodeSeconds,   //倒计时时间
-      codeTimer: null   //倒计时定时器
+      codeTimer: null,   //倒计时定时器
+
+
+      sendMobile: ''     //保存初始化验证码之后用来发短信的手机号
     }
   },
 
@@ -90,10 +93,6 @@ export default {
     showGeetest () {
       const { mobile } = this.form
 
-      //如果已经初始化没验证，就直接弹出验证码框，不要重新初始化
-      if (this.captchaObj) {
-        return this.captchaObj.verify()
-      }
 
       //初始化验证码期间禁用按钮
       this.codeloading = true
@@ -101,7 +100,7 @@ export default {
       // 1, 点击获取验证码按钮，发送请求，获取用来初始化验证码的参数
       axios({
         method: 'GET',
-        url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${mobile}`
+        url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${this.form.mobile}`
       }).then(res => {
         // console.log(res)
         const data = res.data.data
@@ -124,6 +123,9 @@ export default {
             //初始化完成后，回复按钮的点击
             this.codeloading = false
 
+            //保存sendmobile的值，为了作比较
+            this.sendMobile = this.form.mobile
+
           }).onSuccess(() => {
             //极验 验证成功
             // console.log(captchaObj.getValidate())
@@ -131,7 +133,7 @@ export default {
             const { geetest_challenge: challenge, geetest_seccode: seccode, geetest_validate: validate } = captchaObj.getValidate()
             axios({
               method: 'GET',
-              url: `http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/${mobile}`,
+              url: `http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/${this.form.mobile}`,
               params: { //用来传递query查询字符串参数
                 challenge,
                 seccode,
@@ -156,7 +158,24 @@ export default {
         if (errorMessage.trim().length > 0) {  //说明手机号有误
           return
         }
-        this.showGeetest()
+        //手机号验证成功
+
+        //如果已经初始化没验证，就直接弹出验证码框，不要重新初始化
+        if (this.captchaObj) {
+          //如果用户输入的手机号和初始化时的手机号不一致，那么就重新初始化，否则直接显示
+          if (this.form.mobile !== this.sendMobile) {
+            //重新初始化之前，删掉原来初始化的div
+            document.body.removeChild(document.querySelector('.geetest_panel'))
+            //更换手机号后初始化
+            this.showGeetest()
+          } else {
+            this.captchaObj.verify()
+          }
+        } else {
+          //第一次初始化
+          this.showGeetest()
+        }
+
       })
     },
 
