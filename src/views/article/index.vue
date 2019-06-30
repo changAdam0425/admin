@@ -108,7 +108,7 @@
 
 
 <script>
-const userInfo = JSON.parse(window.localStorage.getItem('user_info'))
+// const userInfo = JSON.parse(window.localStorage.getItem('user_info'))
 export default {
   name: 'AppArticle',
   data () {
@@ -123,7 +123,7 @@ export default {
       methods: 'GET',
       url: '/articles',
       headers: {  //自定义发送请求头
-        Authorization: `Bearer ${userInfo.token}`
+        // Authorization: `Bearer ${userInfo.token}`
       }
     }).then(res => {
       console.log(res)
