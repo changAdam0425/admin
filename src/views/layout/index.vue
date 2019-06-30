@@ -1,9 +1,18 @@
 <template>
-  <div>
-    <AppAside></AppAside>
-    <AppHeader></AppHeader>
-    <!-- 这里是 home 文章管理 发布文章 等 -->
-  </div>
+  <el-container>
+    <el-aside width="200px">
+      <AppAside />
+    </el-aside>
+    <el-container>
+      <el-header>
+        <AppHeader />
+      </el-header>
+      <el-main>
+        <!-- Layout 组件的路由出口 -->
+        <router-view />
+      </el-main>
+    </el-container>
+  </el-container>
 </template>
 
 
@@ -21,4 +30,16 @@ export default {
 
 
 <style lang="less" scoped>
+.el-container {
+  height: 100%;
+}
+
+.el-aside {
+  background-color: #d0dce7;
+  height: 100%;
+}
+
+.el-main {
+  background-color: #ddd;
+}
 </style>
