@@ -28,6 +28,7 @@
         <!-- 给组件加 class，会作用到它的根元素 -->
         <el-button class="btn-login"
                    @click="handlelogin"
+                   :loading=loginloading
                    type="primary">登录</el-button>
       </el-form-item>
     </el-form>
@@ -47,6 +48,8 @@ export default {
         mobile: '18401683724',
         code: ''
       },
+
+      loginloading: false,  //登录按钮的 loading 状态
 
       captchaObj: null,  //极验 验证码对象
 
@@ -125,6 +128,7 @@ export default {
 
     //点击登录
     login () {
+      this.loginloading = true
       axios({
         method: 'POST',
         url: 'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
@@ -136,10 +140,12 @@ export default {
           message: '登录成功',
           type: 'success'
         })
+        this.loginloading = false
         this.$router.push({
           name: 'Home'
         })
       }).catch(err => {   // >=400 的状态码会进入这里
+        this.loginloading = false
         if (err.response.status === 400) {
           this.$message.error('登录失败,手机号或验证码错误')
         }
