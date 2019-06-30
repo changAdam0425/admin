@@ -1,11 +1,13 @@
 <template>
   <div>
-    <el-form :model="form">
-      <el-form-item>
+    <el-form :model="form"
+             :rules="rules"
+             ref="ruleForm">
+      <el-form-item prop="mobile">
         <el-input placeholder="手机号"
                   v-model="form.mobile"></el-input>
       </el-form-item>
-      <el-form-item>
+      <el-form-item prop="code">
         <!-- 支持栅格布局，一共是24列 -->
         <el-col :span="10">
           <el-input placeholder="验证码"
@@ -45,7 +47,20 @@ export default {
         mobile: '18401683724',
         code: ''
       },
-      captchaObj: null  //极验 验证码对象
+
+      captchaObj: null,  //极验 验证码对象
+
+      // Form 组件提供了表单验证的功能，只需要通过 rules 属性传入约定的验证规则，并将 Form-Item 的 prop 属性设置为需校验的字段名即可
+      rules: {
+        mobile: [
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { len: 11, message: '长度必须11个字符', trigger: 'blur' }   //trigger  表示当失去焦点时验证
+        ],
+        code: [
+          { required: true, message: '请输入验证码', trigger: 'blur' },
+          { len: 6, message: '长度必须6个字符', trigger: 'blur' }
+        ]
+      }
     }
   },
 
@@ -108,8 +123,8 @@ export default {
     },
 
 
-    //登录
-    handlelogin () {
+    //点击登录
+    login () {
       axios({
         method: 'POST',
         url: 'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
@@ -125,9 +140,25 @@ export default {
           name: 'Home'
         })
       }).catch(err => {   // >=400 的状态码会进入这里
-        this.$message.error('登录失败,手机号或验证码错误')
+        if (err.response.status === 400) {
+          this.$message.error('登录失败,手机号或验证码错误')
+        }
+      })
+    },
+
+
+    //表单验证通过后登录
+    handlelogin () {
+      //表单组件的 validate 方法，用来获取表单的验证状态
+      this.$refs['ruleForm'].validate(valid => {
+        if (!valid) {
+          return
+        }
+        this.login()
       })
     }
+
+
   }
 }
 </script>
