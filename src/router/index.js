@@ -8,7 +8,7 @@ export default new Router({
     {
       name: 'Home',
       path: '/',
-      component: () => import('@/views/Home')
+      component: () => import('@/views/layout')
     },
     {
       name: 'Login',
