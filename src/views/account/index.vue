@@ -30,7 +30,19 @@
         </el-form>
       </el-col>
       <el-col :offset="2"
-              :span="4"></el-col>
+              :span="4">
+        <el-upload action="https://jsonplaceholder.typicode.com/posts/"
+                   :show-file-list="false"
+                   :on-success="handleAvatarSuccess"
+                   :before-upload="beforeAvatarUpload"
+                   :http-request="handleUpload">
+          <img v-if="userInfo.photo"
+               :src="userInfo.photo"
+               class="avatar">
+          <i v-else
+             class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
+      </el-col>
     </el-row>
   </el-card>
 </template>
@@ -49,6 +61,8 @@ export default {
   },
 
   methods: {
+
+    //加载账户信息
     loadUserInfo () {
       this.$http({
         method: 'GET',
@@ -58,7 +72,7 @@ export default {
       })
     },
 
-
+    //保存更新
     handleUpdate () {
       const { name, intro, email } = this.userInfo
       this.$http({
@@ -78,6 +92,36 @@ export default {
         console.log(err)
         this.$message.error('更新用户信息失败')
       })
+    },
+
+
+    handleAvatarSuccess () { },
+
+    beforeAvatarUpload () { },
+
+
+    //上传图片
+    handleUpload (uploadConfig) {
+      // axios 上传文件
+      // 1. 构建一个 FormData 表单对象
+      //    将文件对象添加到 FormData 中
+      // 2. 将 FormData 配置到请求体 data 选项中
+      const formData = new FormData()
+      formData.append('photo', uploadConfig.file)
+      this.$http({
+        method: 'PATCH',
+        url: '/user/photo',
+        data: formData
+      }).then(data => {
+        this.userInfo.photo = data.photo
+        this.$message({
+          type: 'success',
+          message: '上传成功'
+        })
+      }).catch(err => {
+        console.log(err)
+        this.$message.error('上传失败')
+      })
     }
 
 
@@ -87,4 +131,27 @@ export default {
 
 
 <style lang="less" scoped>
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
 </style>
