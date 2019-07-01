@@ -88,6 +88,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="success"
+                       @click="$router.push(`/edit/${scope.row.id}`)"
                        plain>修改</el-button>
             <!-- plain朴素按钮 -->
             <el-button type="danger"
@@ -214,7 +215,6 @@ export default {
         this.articleLoading = false
       })
     },
-
 
 
 
