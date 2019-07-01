@@ -101,9 +101,9 @@ export default {
       this.$http({
         method: 'GET',
         url: `/captchas/${this.form.mobile}`
-      }).then(res => {
+      }).then(data => {
         // console.log(res)
-        const data = res.data.data
+        // const data = res.data.data
         // 2, 调用 极验 提供的 API，通过上一步得到的数据初始化验证码
         window.initGeetest({  //加上 window 前缀，否则模块化会认为是一个未定义的成员
           // 以下配置参数来自服务端 SDK
@@ -139,7 +139,7 @@ export default {
                 seccode,
                 validate
               }
-            }).then(res => {
+            }).then(data => {
               //发送短信验证码成功
               // console.log(res)
               //倒计时
@@ -187,11 +187,11 @@ export default {
         method: 'POST',
         url: '/authorizations',
         data: this.form
-      }).then(res => {  //>=200 && <400 的状态码会进入这里
+      }).then(data => {  //>=200 && <400 的状态码会进入这里
         // console.log(res)
 
         //登陆成功，将接口返回的用户数据放到本地存储
-        window.localStorage.setItem('user_info', JSON.stringify(res.data.data))
+        window.localStorage.setItem('user_info', JSON.stringify(data))
 
         //登录成功提示消息
         this.$message({
