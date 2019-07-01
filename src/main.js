@@ -5,8 +5,18 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import './styles/index.less'
 import axios from 'axios'
+import JSONbig from 'json-bigint'
 //配置axios的基础路径
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'
+
+//处理超出js安全整数范围的数字
+axios.defaults.transformResponse = [function (data) {
+  try {
+    return JSONbig.parse(data)
+  } catch (err) {
+    return data   //无法转化的数据直接原样返回
+  }
+}]
 
 
 // axios请求拦截器
@@ -26,8 +36,14 @@ axios.interceptors.request.use((config) => {
 
 // axios响应拦截器
 axios.interceptors.response.use((response) => { // >=200 && <400 的状态码会进入这里
+
   // 处理响应数据
-  return response.data.data
+  if (typeof response.data === 'object' && response.data.data) {
+    return response.data.data
+  } else {
+    return response.data
+  }
+
 }, function (error) {   // >=400 的状态码会进入这里
   // 处理401状态码
   const status = error.response.status
