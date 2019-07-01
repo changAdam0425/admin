@@ -40,6 +40,7 @@ export default {
 }
 
 .el-main {
+  height: 100%;
   background-color: #ddd;
 }
 </style>
