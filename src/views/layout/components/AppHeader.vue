@@ -11,7 +11,7 @@
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item>账户设置</el-dropdown-item>
-          <el-dropdown-item>退出</el-dropdown-item>
+          <el-dropdown-item @click="handleLogoout">退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </el-col>
@@ -29,8 +29,38 @@ export default {
 
   created () {
     this.userInfo = JSON.parse(window.localStorage.getItem('user_info'))
+  },
+
+  methods: {
+    handleLogoout () {
+      this.$confirm('确认退出吗？', '退出提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 清除本地存储中的 用户信息 user_info
+        window.localStorage.removeItem('user_info')
+
+        this.$message({
+          type: 'success',
+          message: '退出成功!'
+        })
+
+        // 跳转到登录页面
+        this.$router.push({
+          name: 'login'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消退出'
+        })
+      })
+    }
   }
 }
+
+
 </script>
 
 
