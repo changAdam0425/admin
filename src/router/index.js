@@ -30,6 +30,11 @@ const router = new Router({
           name: 'Edit',
           path: '/edit/:id',
           component: () => import('@/views/Edit'),
+        },
+        {
+          name: 'Comment',
+          path: '/comment',
+          component: () => import('@/views/comment'),
         }
       ]
     },
