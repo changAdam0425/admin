@@ -6,6 +6,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import './styles/index.less'
 import axios from 'axios'
 import JSONbig from 'json-bigint'
+import store from './store'
 //配置axios的基础路径
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'
 
@@ -68,5 +69,6 @@ Vue.config.productionTip = false
 
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount('#app')

@@ -83,7 +83,9 @@ export default {
           intro,
           email
         }
-      }).then(() => {
+      }).then(data => {
+        console.log(data)
+        this.$store.commit('changeUser', data)
         this.$message({
           type: 'success',
           message: '更新用户信息成功'
@@ -114,6 +116,7 @@ export default {
         data: formData
       }).then(data => {
         this.userInfo.photo = data.photo
+        this.$store.commit('changeUser', this.userInfo)
         this.$message({
           type: 'success',
           message: '上传成功'
